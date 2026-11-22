@@ -36,3 +36,7 @@ SECURITY
 
 Health endpoint: /api/health
 Key status (count only, no secrets): /api/info
+
+NEW: Chat me jab bhi multi-file project maango, AI files <file> format me banata hai.
+Side panel (artifact) me folder tree + code dikhta hai, "ZIP" button se poora project download.
+Thinking / "file bana raha hoon" status live dikhta hai.
