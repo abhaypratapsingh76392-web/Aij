@@ -44,3 +44,10 @@ NOTES / LIMITATIONS
 ENDPOINTS
 GET /api/health  - server health
 GET /api/info    - configured API key count only; never returns key values
+
+MOBILE / PROJECT UX PATCH
+- Mobile layout uses dynamic viewport height, safe-area padding, independent chat scrolling and a fixed-height composer region.
+- Sidebar is an off-canvas drawer on phones; file preview and file tree stay within the screen.
+- Welcome orb now has rotating luminous rings, glow and floating animation (respects reduced-motion preference).
+- Explicit software/project creation requests from Chat mode are routed to Build Project mode so generated code is returned as separate files and a ZIP preview rather than one giant chat code block.
+- Progress indicators now advance at actual application milestones instead of an automatic timer.
