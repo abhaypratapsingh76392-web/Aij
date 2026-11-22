@@ -1,42 +1,46 @@
-FreeModel Studio — Premium UI + Automatic API Key Fallback
-Render.com Docker deployment
+NEBULA AI — Intelligent Chat + Coding Workspace + Arena AI
+========================================================
 
-DEPLOY
-1) Updated folder GitHub repo me upload/push karo.
-2) Render -> New -> Web Service -> apna repo select karo -> Runtime Docker.
-3) Environment me FM_BASE_URL = https://freemodel.in/v1 set rakho.
-4) Deploy karo. API keys sirf Render Environment Variables me rakho; HTML/browser me kabhi nahi.
+FEATURES
+- Reference-inspired Nebula interface with a dark glass workspace, compact scrollable model picker, model badges, and mobile-friendly composer.
+- Chat, image and video generation modes (provider models must support them).
+- Build Project mode: asks the selected model for a complete JSON file manifest, previews the generated file tree and file contents, and packs the files into a downloadable ZIP in the browser.
+- Arena AI: sends the same prompt to two selected chat models in parallel and lets you choose the preferred answer.
+- Visible activity/status timeline while requests are running. These are task progress indicators, not a display of private model chain-of-thought.
+- Upload text/code files, images and ZIP archives as context.
+- API keys remain on the Render server.
+- Automatic API key fallback across FM_API_KEY and numbered backup variables up to slot 100.
+
+DEPLOY TO RENDER
+1. Upload the complete freemodel-studio folder to your GitHub repository.
+2. In Render create/update a Web Service and select Docker runtime.
+3. Add environment variables in Render:
+   FM_BASE_URL = https://freemodel.in/v1
+   FM_API_KEY = your primary key
+   FM_API_KEY_2 = your backup key
+   FM_API_KEY_3 = another backup key (optional)
+   APP_PASSWORD = choose a private app password (recommended)
+4. Add more backups as FM_API_KEY_4, FM_API_KEY_5, ... up to FM_API_KEY_100.
+5. Save changes and deploy/redeploy.
 
 API KEY FALLBACK
-Primary key:
-  FM_API_KEY = fm_...
-
-Backup keys:
-  FM_API_KEY_2 = fm_...
-  FM_API_KEY_3 = fm_...
-  FM_API_KEY_4 = fm_...
-  FM_API_KEY_5 = fm_...
-  ...jitni chaho add kar sakte ho (server 1 se 100 numbered slots read karta hai).
-
-Agar FM_API_KEY_2 set kar rahe ho to exact env name FM_API_KEY_2 rakho.
-FM_API_KEY2 (underscore ke bina) bhi accepted hai.
-Agar pehli key invalid/expired, quota limit, rate limit, provider/server error ya network failure de, server next configured key try karega. 400/404 jaise normal request/model errors par key switch nahi karega.
-Fallback same FM_BASE_URL aur same API request ke saath hota hai. Sab keys fail hon to server error return karega.
-Render Dashboard -> your service -> Environment -> Add Environment Variable -> Save, phir deploy/restart.
-
-OPTIONAL
-APP_PASSWORD = set karoge to app password maangega. Empty = password disabled.
-FM_BASE_URL = provider ka API base URL; default https://freemodel.in/v1
+- The server reads FM_API_KEY, then FM_API_KEY_2, FM_API_KEY_3, etc. It also accepts FM_API_KEY2 as an alias for slot 2 and similarly numbered aliases.
+- When an upstream request returns an authentication, quota, rate-limit, timeout or retryable server error, the server retries the same request with the next configured key.
+- Ordinary request errors such as invalid model/prompt (400/404/422) are not retried with other keys.
+- Fallback uses the same FM_BASE_URL. It cannot repair an expired account, unsupported model, provider outage, or incompatible API format.
 
 SECURITY
-- API keys backend par rehti hain, browser source me nahi jaati.
-- APP_PASSWORD set karna recommended hai, warna jiske paas app URL hai woh aapke API balance ka use kar sakta hai.
-- Keys ko chat, HTML ya public GitHub repo me paste mat karna.
-- Agar key kabhi public ho gayi ho to provider dashboard se rotate/revoke karo.
+- Never put API keys in index.html or commit them to public GitHub.
+- Set APP_PASSWORD to prevent other people from using your hosted API balance.
+- If a key was exposed, revoke/rotate it at the provider.
+- Uploaded files and generated chat history are handled in the browser; do not upload secrets or sensitive files unless you trust the hosting setup.
 
-Health endpoint: /api/health
-Key status (count only, no secrets): /api/info
+NOTES / LIMITATIONS
+- Build Project mode depends on the selected model following the requested JSON file-manifest format. Very large projects may hit provider output-token limits; ask for a smaller project or generate it in modules.
+- Generated ZIPs are assembled in the browser with JSZip (CDN required).
+- Model progress labels show the app's current task stage. They do not expose hidden reasoning or guarantee that a provider is internally using a particular thinking mode.
+- Image/video features depend on the upstream provider endpoints and model availability.
 
-NEW: Chat me jab bhi multi-file project maango, AI files <file> format me banata hai.
-Side panel (artifact) me folder tree + code dikhta hai, "ZIP" button se poora project download.
-Thinking / "file bana raha hoon" status live dikhta hai.
+ENDPOINTS
+GET /api/health  - server health
+GET /api/info    - configured API key count only; never returns key values

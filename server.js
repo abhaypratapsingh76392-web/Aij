@@ -126,4 +126,4 @@ app.use('/api', async (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.listen(process.env.PORT || 3000, '0.0.0.0', () => console.log('FreeModel Studio running'));
+app.listen(process.env.PORT || 3000, '0.0.0.0', () => console.log('Nebula AI running'));
